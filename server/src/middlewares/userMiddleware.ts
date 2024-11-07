@@ -3,9 +3,18 @@ import userModel from '~/models/userModel'
 
 const userMiddleware = {
   createUser: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { username, password, name, role, base_salary, phone, national_id } = req.body
+    const { isAdmin, username, name, role, base_salary, phone, national_id, gender } = req.body
 
-    if (!username || !password || !name || !role || !base_salary || !phone || !national_id) {
+    if (
+      typeof isAdmin !== 'boolean' ||
+      !username ||
+      !name ||
+      !role ||
+      !base_salary ||
+      !phone ||
+      !national_id ||
+      !gender
+    ) {
       res.status(400).json({ message: 'All fields are required' })
       return
     }
@@ -40,6 +49,12 @@ const userMiddleware = {
   loginUser: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { username, password } = req.body
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(username)) {
+      res.status(400).json({ message: 'Invalid email format' })
+      return
+    }
+
     if (!username || !password) {
       res.status(400).json({ message: 'All fields are required' })
       return
@@ -48,8 +63,49 @@ const userMiddleware = {
     next()
   },
 
+  getForgotPasswordCode: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { username } = req.body
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(username)) {
+      res.status(400).json({ message: 'Invalid email format' })
+      return
+    }
+
+    if (!username) {
+      res.status(400).json({ message: 'Username is required' })
+      return
+    }
+
+    next()
+  },
+
+  forgotPassword: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { username, code, password, passwordAgain } = req.body
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(username)) {
+      res.status(400).json({ message: 'Invalid email format' })
+      return
+    }
+
+    if (!username || !code || !password || !passwordAgain) {
+      res.status(400).json({ message: 'All fields are required' })
+      return
+    }
+
+    if (password !== passwordAgain) {
+      res.status(400).json({ message: 'Passwords do not match' })
+      return
+    }
+
+    next()
+  },
+
   adminUpdateUser: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { name, role, base_salary, phone, national_id, status } = req.body
+
+    console.log(req.body)
 
     if (!name || !role || !base_salary || !phone || !national_id || !status) {
       res.status(400).json({ message: 'All fields are required' })
@@ -88,6 +144,26 @@ const userMiddleware = {
     const phoneRegex = /^0\d{9}$|^0\d{10}$/
     if (!phoneRegex.test(phone)) {
       res.status(400).json({ message: 'Invalid phone number. Must start with 0 and be 10 or 11 digits.' })
+      return
+    }
+
+    next()
+  },
+
+  changePassword: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { oldPassword, newPassword, newPasswordAgain } = req.body
+
+    if (!oldPassword || !newPassword || !newPasswordAgain) {
+      res.status(400).json({ message: 'All fields are required' })
+      return
+    }
+
+    if (newPassword === oldPassword) {
+      res.status(400).json({ message: 'New password must be different from the old password' })
+    }
+
+    if (newPassword !== newPasswordAgain) {
+      res.status(400).json({ message: 'Passwords do not match' })
       return
     }
 

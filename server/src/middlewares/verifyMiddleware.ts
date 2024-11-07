@@ -13,7 +13,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
 
   jwt.verify(token, JWT_SECRET as string, (err) => {
     if (err) {
-      res.status(403).json({ message: 'Invalid token' })
+      res.status(403).json({ message: 'Invalid token', error: err, token: token })
       return
     }
 
@@ -31,11 +31,11 @@ const verifyAdmin = (req: Request, res: Response, next: NextFunction) => {
 
   jwt.verify(token, JWT_SECRET as string, (err, decoded) => {
     if (err) {
-      res.status(403).json({ message: 'Invalid token' })
+      res.status(403).json({ message: 'Invalid token', error: err })
       return
     }
 
-    if ((decoded as ITokenDecoded)?.role !== 'admin') {
+    if (!(decoded as ITokenDecoded)?.isAdmin) {
       res.status(403).json({ message: 'Access denied. Admins only.' })
       return
     }

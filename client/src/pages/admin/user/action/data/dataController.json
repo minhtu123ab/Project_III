@@ -1,0 +1,152 @@
+{
+  "dataControllerUpdate": [
+    {
+      "name": "name",
+      "labelName": "Full Name",
+      "required": true,
+      "type": "text"
+    },
+    {
+      "name": "address",
+      "labelName": "Address",
+      "required": false,
+      "type": "text"
+    },
+    {
+      "name": "phone",
+      "labelName": "Phone Number",
+      "required": true,
+      "type": "number"
+    },
+    {
+      "name": "national_id",
+      "labelName": "National ID",
+      "required": true,
+      "type": "number"
+    },
+    {
+      "name": "gender",
+      "labelName": "Gender",
+      "required": true,
+      "type": "select",
+      "data": [
+        { "value": "Male", "label": "Male" },
+        { "value": "Female", "label": "Female" },
+        { "value": "Other", "label": "Other" }
+      ]
+    },
+    {
+      "name": "birth_date",
+      "labelName": "Date of Birth",
+      "required": false,
+      "type": "date"
+    },
+    {
+      "name": "role",
+      "labelName": "Role",
+      "required": true,
+      "type": "select",
+      "data": [
+        { "value": "Executive", "label": "Executive" },
+        { "value": "Manager", "label": "Manager" },
+        { "value": "Senior Specialist", "label": "Senior Specialist" },
+        { "value": "Specialist", "label": "Specialist" },
+        { "value": "Intern", "label": "Intern" }
+      ]
+    },
+    {
+      "name": "base_salary",
+      "labelName": "Base Salary",
+      "required": true,
+      "type": "number"
+    },
+    {
+      "name": "isAdmin",
+      "labelName": "Is Administrator",
+      "required": true,
+      "type": "select",
+      "data": [
+        { "value": true, "label": "Yes" },
+        { "value": false, "label": "No" }
+      ]
+    },
+    {
+      "name": "status",
+      "labelName": "Status",
+      "required": true,
+      "type": "select",
+      "data": [
+        { "value": "Active", "label": "Active" },
+        { "value": "Pending", "label": "Pending" },
+        { "value": "Resigned", "label": "Resigned" },
+        { "value": "Leave", "label": "Leave" }
+      ]
+    }
+  ],
+  "dataControllerCreate": [
+    {
+      "name": "name",
+      "labelName": "Full Name",
+      "required": true,
+      "type": "text"
+    },
+    {
+      "name": "username",
+      "labelName": "Email Address",
+      "required": true,
+      "type": "email"
+    },
+    {
+      "name": "phone",
+      "labelName": "Phone Number",
+      "required": true,
+      "type": "number"
+    },
+    {
+      "name": "national_id",
+      "labelName": "National ID",
+      "required": true,
+      "type": "number"
+    },
+    {
+      "name": "gender",
+      "labelName": "Gender",
+      "required": true,
+      "type": "select",
+      "data": [
+        { "value": "Male", "label": "Male" },
+        { "value": "Female", "label": "Female" },
+        { "value": "Other", "label": "Other" }
+      ]
+    },
+    {
+      "name": "role",
+      "labelName": "Role",
+      "required": true,
+      "type": "select",
+      "data": [
+        { "value": "Executive", "label": "Executive" },
+        { "value": "Manager", "label": "Manager" },
+        { "value": "Senior Specialist", "label": "Senior Specialist" },
+        { "value": "Specialist", "label": "Specialist" },
+        { "value": "Intern", "label": "Intern" }
+      ]
+    },
+    {
+      "name": "base_salary",
+      "labelName": "Base Salary",
+      "required": true,
+      "type": "number"
+    },
+    {
+      "name": "isAdmin",
+      "labelName": "Is Administrator",
+      "required": true,
+      "type": "select",
+      "data": [
+        { "value": true, "label": "Yes" },
+        { "value": false, "label": "No" }
+      ]
+    }
+  ]
+}
