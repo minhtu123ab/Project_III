@@ -6,11 +6,12 @@ import axios from "axios";
 interface IPropModal<T> {
   data: T;
   fetchData: () => void;
+  nameItem: string;
 }
 
 const ModalDelete = forwardRef(
   <T extends { _id: string; name: string }>(
-    { data, fetchData }: IPropModal<T>,
+    { data, fetchData, nameItem }: IPropModal<T>,
     ref: React.ForwardedRef<unknown>
   ) => {
     const [visible, setVisible] = useState(false);
@@ -29,8 +30,8 @@ const ModalDelete = forwardRef(
 
     const handleOk = async () => {
       try {
-        await axiosInstance.delete(`/user/delete/${data._id}`);
-        message.success("User deleted successfully");
+        await axiosInstance.delete(`/${nameItem}/delete/${data._id}`);
+        message.success("Deleted successfully");
         fetchData();
       } catch (err) {
         console.error(err);

@@ -18,6 +18,16 @@ interface IDecodeToken {
   image: string;
 }
 
+interface IDataUserToken {
+  isAdmin: boolean;
+  role: string;
+  name: string;
+  _id: string;
+  iat: number;
+  exp: number;
+  image: string;
+}
+
 interface FileWithPreview extends File {
   preview?: string;
 }
@@ -85,8 +95,82 @@ interface IControllerInput {
   type?: string;
   name: string;
   money?: boolean;
+  textarea?: boolean;
+  disabled?: boolean;
 }
 
 interface IControllerSelect extends IControllerInput {
   data: { value: string | boolean; label: string }[];
+}
+
+interface IDataAttendance {
+  _id: string;
+  user_id: string;
+  check_in: string;
+  check_out: string;
+  date: Date | string;
+  status: string;
+  working_hours: number;
+}
+
+interface IDayIsMonth {
+  date?: Date;
+  data?: IDataAttendance;
+  empty?: string;
+}
+
+interface ISelectedMonth {
+  month: number;
+  year: number;
+}
+
+interface IDataHoliday {
+  name: string;
+  date: Date | string;
+}
+
+interface IDataHolidayApi extends IDataHoliday {
+  _id: string;
+  isPast: boolean;
+}
+
+interface IDataRequestLeave {
+  date: Date | string;
+  description: string;
+}
+
+interface IDataRequestAttendance extends IDataRequestLeave {
+  check_in: string;
+  check_out: string;
+}
+
+interface IDataRequest {
+  _id: string;
+  user_id: string;
+  date: Date | string;
+  description: string;
+  status: "Pending" | "Approved" | "Rejected" | string;
+  check_in?: string;
+  check_out?: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  title: "Attendance Change" | "Leave Request" | string;
+}
+
+interface ILeaveRequest {
+  _id: string;
+  user_id: {
+    _id: string;
+    name: string;
+  };
+  description: string;
+  date: Date;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface IAttendanceChangeRequest extends ILeaveRequest {
+  check_in: string;
+  check_out: string;
 }

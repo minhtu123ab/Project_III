@@ -12,6 +12,7 @@ const Zone = () => {
   const [isSelecting, setIsSelecting] = useState(false);
   const [visible, setVisible] = useState(false);
   const [idZone, setIdZone] = useState("");
+  const [checkZone, setCheckZone] = useState(true);
 
   const fetchLocation = async () => {
     try {
@@ -23,6 +24,7 @@ const Zone = () => {
         ]);
         setIdZone(response.data.data[0]._id);
         setRadius(response.data.data[0].radius);
+        setCheckZone(false);
         return;
       }
       if (navigator.geolocation) {
@@ -33,6 +35,7 @@ const Zone = () => {
               pos.coords.longitude,
             ];
             setPosition(userPosition);
+            setCheckZone(true);
           },
           (error) => {
             console.error(error);
@@ -78,6 +81,7 @@ const Zone = () => {
         longitude: position[1],
         radius,
       });
+      fetchLocation();
       message.success("Location and radius saved successfully.");
     } catch (err) {
       console.error(err);
@@ -168,7 +172,11 @@ const Zone = () => {
         </div>
 
         <div className="flex gap-5">
-          <Button onClick={handleResetLocationModal} size="large">
+          <Button
+            disabled={checkZone}
+            onClick={handleResetLocationModal}
+            size="large"
+          >
             Reset to current position
           </Button>
           <Button

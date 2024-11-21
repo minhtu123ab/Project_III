@@ -87,10 +87,10 @@ const EditUser = () => {
       formData.append("phone", data.phone);
       formData.append("national_id", data.national_id);
       formData.append("gender", data.gender);
-      formData.append("base_salary", data.base_salary);
-      formData.append("role", data.role);
-      formData.append("isAdmin", String(data.isAdmin));
-      formData.append("status", data.status);
+      user.isAdmin && formData.append("base_salary", data.base_salary);
+      user.isAdmin && formData.append("role", data.role);
+      user.isAdmin && formData.append("isAdmin", String(data.isAdmin));
+      user.isAdmin && formData.append("status", data.status);
       formData.append("address", data.address || "");
       formData.append(
         "birth_date",
@@ -99,12 +99,16 @@ const EditUser = () => {
       if (data.image instanceof File) {
         formData.append("image", data.image);
       }
-      for (const [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
-      await axiosInstance.put(`/user/admin/update/${user._id}`, formData);
-      message.success("Employee updated successfully");
-      navigate("/admin/users");
+      await axiosInstance.put(
+        user.isAdmin
+          ? `/user/admin/update/${user._id}`
+          : `/user/update/${user._id}`,
+        formData
+      );
+      message.success("Updated successfully");
+      user.isAdmin
+        ? navigate("/admin/users")
+        : navigate(`/user/detail/${user._id}/profile`);
     } catch (err) {
       console.error(err);
       if (axios.isAxiosError(err) && err.response) {
@@ -145,6 +149,12 @@ const EditUser = () => {
                 labelName={item.labelName}
                 required={item.required}
                 data={item.data}
+                disabled={
+                  !user.isAdmin &&
+                  (item.name === "role" ||
+                    item.name === "isAdmin" ||
+                    item.name === "status")
+                }
               />
             ) : (
               <ControllerInput
@@ -155,6 +165,7 @@ const EditUser = () => {
                 labelName={item.labelName}
                 required={item.required}
                 type={item.type}
+                disabled={!user.isAdmin && item.name === "base_salary"}
               />
             )
           )}

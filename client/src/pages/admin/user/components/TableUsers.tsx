@@ -79,15 +79,15 @@ const TableUsers = () => {
       <table className="min-w-full border-collapse">
         <thead>
           <tr>
-            <th>Image</th>
-            <th>No.</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Role</th>
-            <th>Admin</th>
-            <th>Status</th>
-            <th>Actions</th>
+            <th className="text-sm text-gray-700">Image</th>
+            <th className="text-sm text-gray-700">No.</th>
+            <th className="text-sm text-gray-700">Name</th>
+            <th className="text-sm text-gray-700">Email</th>
+            <th className="text-sm text-gray-700">Phone</th>
+            <th className="text-sm text-gray-700">Role</th>
+            <th className="text-sm text-gray-700">Admin</th>
+            <th className="text-sm text-gray-700">Status</th>
+            <th className="text-sm text-gray-700">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -130,17 +130,20 @@ const TableUsers = () => {
                   onClick={() =>
                     navigate(`/admin/users/detail/${item._id}/profile`)
                   }
-                  className="border-none"
+                  className="text-green-600 hover:!text-green-400"
+                  type="text"
                   icon={<IoEyeOutline size={20} />}
                 />
                 <Button
-                  className="border-none"
+                  type="text"
+                  className="text-blue-600 hover:!text-blue-400"
                   icon={<IoCreateOutline size={20} />}
                   onClick={() => navigate(`/admin/users/edit/${item._id}`)}
                 />
                 <Button
                   onClick={() => handleDelete(item)}
-                  className="border-none"
+                  className="text-red-600 hover:!text-red-400"
+                  type="text"
                   icon={<IoTrashOutline size={20} />}
                 />
               </td>
@@ -150,6 +153,7 @@ const TableUsers = () => {
       </table>
       <Pagination totalCount={totalCount} />
       <ModalDelete
+        nameItem="user"
         ref={handleModalDeleteRef}
         data={dataDelete}
         fetchData={fetchUsers}

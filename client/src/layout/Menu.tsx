@@ -1,57 +1,15 @@
-import { IoGridOutline } from "react-icons/io5";
-import { IoPeopleOutline } from "react-icons/io5";
-import { IoCheckmarkCircleOutline } from "react-icons/io5";
-import { IoCashOutline } from "react-icons/io5";
-import { IoDocumentTextOutline } from "react-icons/io5";
-import { IoCalendarOutline } from "react-icons/io5";
-import { IoSettingsOutline } from "react-icons/io5";
-import { IoLocationOutline } from "react-icons/io5";
+import React from "react";
 import { NavLink } from "react-router-dom";
 
-const data = [
-  {
-    icon: <IoGridOutline size={25} />,
-    title: "Dashboard",
-    path: "/admin/dashboard",
-  },
-  {
-    icon: <IoPeopleOutline size={25} />,
-    title: "All Employees",
-    path: "/admin/users",
-  },
-  {
-    icon: <IoCheckmarkCircleOutline size={25} />,
-    title: "Attendance",
-    path: "/admin/attendance",
-  },
-  {
-    icon: <IoLocationOutline size={25} />,
-    title: "Zone",
-    path: "/admin/zone",
-  },
-  {
-    icon: <IoCashOutline size={25} />,
-    title: "Payroll",
-    path: "/admin/payroll",
-  },
-  {
-    icon: <IoDocumentTextOutline size={25} />,
-    title: "Applications",
-    path: "/admin/applications",
-  },
-  {
-    icon: <IoCalendarOutline size={25} />,
-    title: "Holidays",
-    path: "/admin/holidays",
-  },
-  {
-    icon: <IoSettingsOutline size={25} />,
-    title: "Setting",
-    path: "/admin/setting",
-  },
-];
+interface IMenu {
+  data: {
+    icon: JSX.Element;
+    title: string;
+    path: string;
+  }[];
+}
 
-const Menu = () => {
+const Menu: React.FC<IMenu> = ({ data }) => {
   return (
     <div className="fixed left-0 w-64 p-2 h-screen">
       <div className="bg-white p-2 flex flex-col gap-3 h-full rounded-lg">

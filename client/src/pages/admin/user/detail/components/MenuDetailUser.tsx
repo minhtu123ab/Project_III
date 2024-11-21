@@ -1,7 +1,8 @@
+import { jwtDecode } from "jwt-decode";
 import {
-  IoCheckmarkCircleOutline,
   IoPersonOutline,
-  IoCalendarClearOutline,
+  IoCalendarOutline,
+  IoAirplaneOutline,
 } from "react-icons/io5";
 import { NavLink, useParams } from "react-router-dom";
 
@@ -12,12 +13,12 @@ const data = [
     path: "profile",
   },
   {
-    icon: <IoCheckmarkCircleOutline size={25} />,
+    icon: <IoCalendarOutline size={25} />,
     title: "Attendance",
     path: "attendance",
   },
   {
-    icon: <IoCalendarClearOutline size={25} />,
+    icon: <IoAirplaneOutline size={25} />,
     title: "Leave",
     path: "leave",
   },
@@ -26,13 +27,20 @@ const data = [
 const MenuDetailUser = () => {
   const { id } = useParams();
 
+  const token = localStorage.getItem("token") || null;
+  const decodeToken: IDecodeToken | null = token ? jwtDecode(token) : null;
+
   return (
     <div>
-      <div className="flex flex-col border-2 rounded-lg border-cyan-100 w-52 overflow-hidden">
+      <div className="flex flex-col border-2 rounded-lg border-cyan-100 w-52 overflow-hidden sticky top-0 z-10">
         {data.map((item, index) => (
           <NavLink
             key={index}
-            to={`/admin/users/detail/${id}/${item.path}`}
+            to={
+              decodeToken?.isAdmin
+                ? `/admin/users/detail/${id}/${item.path}`
+                : `/user/detail/${id}/${item.path}`
+            }
             className={({ isActive }) =>
               `flex items-center p-3 gap-2 hover:bg-cyan-400 hover:text-white ${
                 isActive ? "bg-cyan-400 text-white" : ""

@@ -9,6 +9,7 @@ const ControllerSelect: React.FC<IControllerSelect> = ({
   labelName,
   required,
   data,
+  disabled,
 }) => {
   return (
     <div className="flex flex-col gap-1">
@@ -27,6 +28,7 @@ const ControllerSelect: React.FC<IControllerSelect> = ({
             className="rounded-md"
             options={data}
             {...field}
+            disabled={disabled}
           />
         )}
       />

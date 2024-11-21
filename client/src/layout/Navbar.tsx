@@ -1,12 +1,17 @@
 import { Button, Input, Dropdown, MenuProps, message } from "antd";
-import { IoChevronDown, IoKeyOutline, IoSearchOutline } from "react-icons/io5";
+import {
+  IoChevronDown,
+  IoKeyOutline,
+  IoPersonOutline,
+  IoSearchOutline,
+} from "react-icons/io5";
 import { IoNotificationsOutline } from "react-icons/io5";
-import { IoLogOutOutline, IoDocumentOutline } from "react-icons/io5";
+import { IoLogOutOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import decodeToken from "../utils/decodeToken";
 import React, { useEffect } from "react";
 import axios from "axios";
 import axiosInstance from "../axios/axiosInstance";
+import { jwtDecode } from "jwt-decode";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -19,13 +24,15 @@ const Navbar = () => {
     navigate("/admin/change-password");
   };
 
-  const [urlImage, setUrlImage] = React.useState<string>("");
+  const [data, setData] = React.useState<IDataUserToken>();
 
   useEffect(() => {
+    const token = localStorage.getItem("token") || null;
+    const decodeToken: IDecodeToken | null = token ? jwtDecode(token) : null;
     const fetchUser = async () => {
       try {
         const response = await axiosInstance.get(`/user/${decodeToken?.id}`);
-        setUrlImage(response.data.data.image);
+        setData(response.data.data);
       } catch (err) {
         console.error(err);
         if (axios.isAxiosError(err) && err.response) {
@@ -41,10 +48,14 @@ const Navbar = () => {
 
   const menuItems: MenuProps["items"] = [
     {
-      key: "Detail",
-      icon: <IoDocumentOutline size={20} color="blue" />,
-      label: "Information",
-      onClick: () => navigate(`/admin/users/detail/${decodeToken?.id}/profile`),
+      key: "Profile",
+      icon: <IoPersonOutline size={20} color="blue" />,
+      label: "Profile",
+      onClick: () => {
+        data?.isAdmin
+          ? navigate(`/admin/users/detail/${data?._id}/profile`)
+          : navigate(`/user/detail/${data?._id}/profile`);
+      },
     },
     {
       key: "ChangePassword",
@@ -66,7 +77,7 @@ const Navbar = () => {
         <div className="flex p-3 justify-between">
           <div className="flex flex-col justify-around">
             <strong className="font-semibold text-lg">
-              Hello {decodeToken?.name}
+              Hello {data?.name}
             </strong>
             <p className="text-xs text-gray-500">Good Morning</p>
           </div>
@@ -86,13 +97,15 @@ const Navbar = () => {
             <div className="flex items-center">
               <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
                 <Button className="h-11 flex justify-between p-1">
-                  <img src={urlImage} alt="" className="w-9 h-9 rounded-md" />
+                  <img
+                    src={data?.image}
+                    alt=""
+                    className="w-9 h-9 rounded-md"
+                  />
                   <div>
-                    <p className="text-black font-semibold">
-                      {decodeToken?.name}
-                    </p>
+                    <p className="text-black font-semibold">{data?.name}</p>
                     <p className="text-xs text-gray-500">
-                      {decodeToken?.isAdmin ? "Admin" : "Employee"}
+                      {data?.isAdmin ? "Admin" : "Employee"}
                     </p>
                   </div>
                   <IoChevronDown size={20} />

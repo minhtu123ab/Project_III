@@ -34,3 +34,20 @@ tr:hover {
 .custom-scroll::-webkit-scrollbar-thumb:hover {
   background: #555; /* Màu khi hover */
 }
+
+.custom-scrollbar {
+  overflow-y: scroll; /* Bật thanh cuộn dọc */
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px; /* Chiều rộng thanh cuộn (nhỏ hơn) */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #26e5e5; /* Màu thanh cuộn */
+  border-radius: 10px; /* Đường viền bo tròn cho thanh cuộn */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #00ffff; /* Màu khi hover */
+}
