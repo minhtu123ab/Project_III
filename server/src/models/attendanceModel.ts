@@ -5,7 +5,7 @@ import holidayModel from './holidayModel'
 interface IAttendanceModel extends Document {
   user_id: mongoose.Types.ObjectId
   date: Date
-  status: 'Present' | 'Absent' | 'Late' | 'On Leave' | 'Holiday' | 'Under Hours' | 'Weekend'
+  status: 'Present' | 'Absent' | 'Late' | 'On Leave' | 'Holiday' | 'Under Hours' | 'Weekend' | 'On A Business Trip'
   check_in?: string
   check_out?: string
   working_hours?: string
@@ -23,7 +23,7 @@ const attendanceSchema = new mongoose.Schema<IAttendanceModel>(
     status: {
       type: String,
       required: true,
-      enum: ['Present', 'Absent', 'Late', 'On Leave', 'Holiday', 'Under Hours', 'Weekend'],
+      enum: ['Present', 'Absent', 'Late', 'On Leave', 'Holiday', 'Under Hours', 'Weekend', 'On A Business Trip'],
       default: 'Absent'
     },
     check_in: { type: String },
@@ -37,9 +37,6 @@ const attendanceSchema = new mongoose.Schema<IAttendanceModel>(
 )
 
 attendanceSchema.pre('save', function (next) {
-  if (this.status === 'On Leave' || this.status === 'Holiday' || this.status === 'Weekend') {
-    return next()
-  }
   if (this.check_in && this.check_out) {
     const checkInTime = new Date('1970-01-01T' + this.check_in + 'Z')
     const checkOutTime = new Date('1970-01-01T' + this.check_out + 'Z')

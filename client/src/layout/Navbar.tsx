@@ -20,11 +20,14 @@ const Navbar = () => {
     localStorage.removeItem("token");
     message.success("You've been logged out successfully!");
   };
-  const handleChangePasswordClick = () => {
-    navigate("/admin/change-password");
-  };
 
   const [data, setData] = React.useState<IDataUserToken>();
+
+  const handleChangePasswordClick = () => {
+    data?.isAdmin
+      ? navigate("/admin/change-password")
+      : navigate("/user/change-password");
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("token") || null;

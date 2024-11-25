@@ -4,7 +4,8 @@ import holidayService from '~/services/holidayService'
 const holidayController = {
   getHolidays: async (req: Request, res: Response) => {
     try {
-      const holidays = await holidayService.getHolidays()
+      const { year } = req.query
+      const holidays = await holidayService.getHolidays(parseInt(year as string))
       res.status(200).json({ holidays })
     } catch (error: unknown) {
       if (error instanceof Error) {

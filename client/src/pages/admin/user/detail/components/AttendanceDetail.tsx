@@ -79,6 +79,8 @@ const AttendanceDetail = () => {
         return "bg-orange-200 text-orange-600";
       case "Weekend":
         return "bg-gray-200 text-gray-600";
+      case "On A Business Trip":
+        return "bg-teal-200 text-teal-600";
       default:
         return "bg-gray-200 text-gray-600";
     }

@@ -8,7 +8,8 @@ interface CustomRequest extends Request {
 const requestController = {
   getRequestsAttendance: async (req: Request, res: Response) => {
     try {
-      const requests = await requestService.getRequestsAttendance()
+      const { month, year } = req.query
+      const requests = await requestService.getRequestsAttendance(parseInt(month as string), parseInt(year as string))
       res.status(200).json({ requests })
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -21,7 +22,8 @@ const requestController = {
 
   getRequestsLeave: async (req: Request, res: Response) => {
     try {
-      const requests = await requestService.getRequestsLeave()
+      const { month, year } = req.query
+      const requests = await requestService.getRequestsLeave(parseInt(month as string), parseInt(year as string))
       res.status(200).json({ requests })
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -34,12 +36,12 @@ const requestController = {
 
   createRequestLeave: async (req: CustomRequest, res: Response) => {
     try {
-      const { date, description } = req.body
+      const { date, description, title } = req.body
       const user_id = req.userId
       if (!user_id) {
         throw new Error('User ID is required')
       }
-      const newRequest = await requestService.createRequestLeave(user_id, date, description)
+      const newRequest = await requestService.createRequestLeave(user_id, date, description, title)
       res.status(201).json({ message: 'Leave request created successfully', request: newRequest })
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -130,10 +132,15 @@ const requestController = {
   getRequestByUserId: async (req: CustomRequest, res: Response) => {
     try {
       const userId = req.userId
+      const { month, year } = req.query
       if (!userId) {
         throw new Error('User ID is required')
       }
-      const requests = await requestService.getRequestByUserId(userId)
+      const requests = await requestService.getRequestByUserId(
+        userId,
+        parseInt(month as string),
+        parseInt(year as string)
+      )
       res.status(200).json({ requests })
     } catch (error: unknown) {
       if (error instanceof Error) {

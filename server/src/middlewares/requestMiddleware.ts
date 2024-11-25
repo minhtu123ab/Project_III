@@ -36,27 +36,29 @@ const requestMiddleware = {
   },
 
   createRequestLeave: async (req: CustomRequest, res: Response, next: NextFunction) => {
-    const { date, description } = req.body
+    const { date, description, title } = req.body
     const user_id = req.userId
 
-    if (!user_id || !date || !description) {
-      res.status(400).json({ message: 'User ID, date, and description are required' })
+    if (!user_id || !date || !description || !title) {
+      res.status(400).json({ message: 'User ID, title, date, and description are required' })
       return
     }
 
-    const { month, year } = getMonthAndYearFromDate(date)
-    const recordCount = await requestModel.countDocuments({
-      user_id,
-      date: {
-        $gte: new Date(`${year}-${month}-01`),
-        $lt: new Date(`${year}-${month + 1}-01`)
-      },
-      title: 'Leave Request'
-    })
+    if (title === 'Leave') {
+      const { month, year } = getMonthAndYearFromDate(date)
+      const recordCount = await requestModel.countDocuments({
+        user_id,
+        date: {
+          $gte: new Date(`${year}-${month}-01`),
+          $lt: new Date(`${year}-${month + 1}-01`)
+        },
+        title: 'Leave Request'
+      })
 
-    if (recordCount >= 2) {
-      res.status(400).json({ message: 'Cannot create more than 2 requests in the same month' })
-      return
+      if (recordCount >= 2) {
+        res.status(400).json({ message: 'Cannot create more than 2 requests in the same month' })
+        return
+      }
     }
 
     next()
@@ -80,8 +82,8 @@ const requestMiddleware = {
       title: 'Attendance Change'
     })
 
-    if (recordCount >= 2) {
-      res.status(400).json({ message: 'Cannot create more than 2 requests in the same month' })
+    if (recordCount >= 3) {
+      res.status(400).json({ message: 'Cannot create more than 3 requests in the same month' })
       return
     }
 

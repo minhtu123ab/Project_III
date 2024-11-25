@@ -1,32 +1,64 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../axios/axiosInstance";
 import axios from "axios";
-import { message } from "antd";
+import { DatePicker, message } from "antd";
+import dayjs, { Dayjs } from "dayjs";
 
 const UserHolidays = () => {
   const [data, setData] = useState<IDataHolidayApi[]>([]);
 
-  const fetchData = async () => {
-    try {
-      const response = await axiosInstance.get("/holiday");
-      setData(response.data.holidays);
-    } catch (err) {
-      console.error(err);
-      if (axios.isAxiosError(err) && err.response) {
-        message.error(err.response.data.message);
-      } else {
-        message.error("An unexpected error occurred");
+  const today = new Date();
+  const vietnamTime = new Date(
+    today.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
+  );
+  const [selectedYear, setSelectedYear] = useState<ISelectedYear>({
+    year: vietnamTime.getFullYear(),
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const year = selectedYear?.year || new Date().getFullYear();
+        const response = await axiosInstance.get("/holiday", {
+          params: { year },
+        });
+        setData(response.data.holidays);
+      } catch (err) {
+        console.error(err);
+        if (axios.isAxiosError(err) && err.response) {
+          message.error(err.response.data.message);
+        } else {
+          message.error("An unexpected error occurred");
+        }
       }
+    };
+    if (selectedYear) {
+      fetchData();
+    }
+  }, [selectedYear]);
+
+  const handleMonthChange = (date: Dayjs | null) => {
+    if (date) {
+      setSelectedYear({
+        year: date.year(),
+      });
     }
   };
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   return (
     <div className="flex flex-col gap-3">
       <h1 className="text-2xl font-semibold">Holidays</h1>
       <div>
+        <div className="flex justify-between items-center mb-4">
+          <DatePicker
+            size="large"
+            picker="year"
+            placeholder="Select Year"
+            onChange={handleMonthChange}
+            value={selectedYear ? dayjs().set("year", selectedYear.year) : null}
+            className="w-full"
+          />
+        </div>
         <div className="flex gap-5 items-center">
           <div className="flex gap-2 items-center">
             <div className="w-2 h-2 rounded-full bg-cyan-300"></div>

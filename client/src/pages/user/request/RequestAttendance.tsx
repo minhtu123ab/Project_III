@@ -5,9 +5,11 @@ import * as yup from "yup";
 import ControllerInput from "../../../components/ControllerInput";
 import axios from "axios";
 import axiosInstance from "../../../axios/axiosInstance";
+import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const schema = yup.object().shape({
-  date: yup.date().required("Date is required"),
+  date: yup.mixed<Date | string>().required("Date is required"),
   check_in: yup.string().required("Check-in time is required"),
   check_out: yup.string().required("Check-out time is required"),
   description: yup.string().required("Description is required"),
@@ -22,6 +24,8 @@ const RequestAttendance = () => {
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  const [searchParams] = useSearchParams();
 
   const onSubmit = async (data: IDataRequestAttendance) => {
     try {
@@ -39,6 +43,18 @@ const RequestAttendance = () => {
       }
     }
   };
+
+  useEffect(() => {
+    const date = searchParams.get("date");
+    if (date) {
+      reset({
+        date: new Date(date).toISOString().split("T")[0],
+        check_in: "",
+        check_out: "",
+        description: "",
+      });
+    }
+  }, [reset, searchParams]);
 
   return (
     <div className="p-4 sm:p-6 md:p-8 !pt-4">
@@ -89,6 +105,25 @@ const RequestAttendance = () => {
           Submit
         </Button>
       </form>
+      <div className="bg-gray-100 p-6 rounded-lg shadow-md flex-1 mt-5">
+        <Typography.Title level={3}>
+          Attendance Adjustment Regulations
+        </Typography.Title>
+        <div className="text-lg">
+          <ul className="list-disc pl-6">
+            <li>
+              You can submit an attendance adjustment request a maximum of **3
+              times per month**.
+            </li>
+            <li>
+              Attendance adjustment requests must be submitted no later than the
+              **end of the same month** for the date you wish to adjust. For
+              example, if you want to adjust the attendance for **November 12**,
+              you must submit the request by **November 30**.
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   );
 };

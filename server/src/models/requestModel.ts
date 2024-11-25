@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 const requestSchema = new mongoose.Schema(
   {
     user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Users', required: true },
-    title: { type: String, enum: ['Attendance Change', 'Leave Request'], required: true },
+    title: { type: String, enum: ['Attendance Change', 'Leave Request', 'Business Trip'], required: true },
     date: { type: Date, required: true },
     description: { type: String, required: true },
     check_in: { type: String },

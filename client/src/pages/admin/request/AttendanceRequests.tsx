@@ -1,18 +1,28 @@
-import { Button, Input, message } from "antd";
-import {
-  IoCheckmarkOutline,
-  IoCloseOutline,
-  IoSearchOutline,
-} from "react-icons/io5";
+import { Button, DatePicker, message } from "antd";
+import { IoCheckmarkOutline, IoCloseOutline } from "react-icons/io5";
 import axiosInstance from "../../../axios/axiosInstance";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import dayjs, { Dayjs } from "dayjs";
 
 const AttendanceRequests = () => {
+  const today = new Date();
+  const vietnamTime = new Date(
+    today.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
+  );
+  const [selectedMonth, setSelectedMonth] = useState<ISelectedMonth>({
+    month: vietnamTime.getMonth() + 1,
+    year: vietnamTime.getFullYear(),
+  });
   const [requests, setRequests] = useState<IAttendanceChangeRequest[]>([]);
-  const fetchRequests = async () => {
+
+  const fetchRequests = useCallback(async () => {
     try {
-      const response = await axiosInstance.get("/request/attendance");
+      const month = selectedMonth?.month || new Date().getMonth() + 1;
+      const year = selectedMonth?.year || new Date().getFullYear();
+      const response = await axiosInstance.get("/request/attendance", {
+        params: { month, year },
+      });
       setRequests(response.data.requests);
     } catch (err) {
       console.error(err);
@@ -22,10 +32,13 @@ const AttendanceRequests = () => {
         message.error("An unexpected error occurred");
       }
     }
-  };
+  }, [selectedMonth?.month, selectedMonth?.year]);
+
   useEffect(() => {
-    fetchRequests();
-  }, []);
+    if (selectedMonth) {
+      fetchRequests();
+    }
+  }, [selectedMonth, fetchRequests]);
 
   const handleApprove = async (id: string) => {
     try {
@@ -60,20 +73,34 @@ const AttendanceRequests = () => {
       }
     }
   };
+
+  const handleMonthChange = (date: Dayjs | null) => {
+    if (date) {
+      setSelectedMonth({
+        month: date.month() + 1,
+        year: date.year(),
+      });
+    }
+  };
+
   return (
     <div className="flex flex-col gap-3 px-4">
       <h1 className="text-2xl text-gray-800 font-semibold mt-2">
         Attendance Requests
       </h1>
-      <div className="flex items-center justify-between ">
-        <form>
-          <Input
-            placeholder="Search..."
-            size="large"
-            className="w-64"
-            prefix={<IoSearchOutline size={20} />}
-          />
-        </form>
+      <div className="flex justify-between items-center mb-4">
+        <DatePicker
+          size="large"
+          picker="month"
+          placeholder="Select Month"
+          onChange={handleMonthChange}
+          value={
+            selectedMonth
+              ? dayjs(`${selectedMonth.year}-${selectedMonth.month}`)
+              : null
+          }
+          className="w-full"
+        />
       </div>
       <table className="min-w-full border-collapse ">
         <thead className="bg-gray-100">

@@ -5,10 +5,12 @@ import * as yup from "yup";
 import ControllerInput from "../../../components/ControllerInput";
 import axios from "axios";
 import axiosInstance from "../../../axios/axiosInstance";
+import ControllerSelect from "../../../components/ControllerSelect";
 
 const schema = yup.object().shape({
   date: yup.date().required("Date is required"),
   description: yup.string().required("Description is required"),
+  title: yup.string().required("Title is required"),
 });
 
 const RequestLeave = () => {
@@ -50,6 +52,17 @@ const RequestLeave = () => {
           required
           type="date"
         />
+        <ControllerSelect
+          control={control}
+          errors={errors}
+          name="title"
+          labelName="Type Of Leave"
+          required
+          data={[
+            { value: "Leave", label: "Leave" },
+            { value: "Business Trip", label: "Business Trip" },
+          ]}
+        />
         <ControllerInput
           control={control}
           errors={errors}
@@ -67,6 +80,35 @@ const RequestLeave = () => {
           Submit
         </Button>
       </form>
+      <div className="bg-gray-100 p-6 rounded-lg shadow-md flex-1 mt-5">
+        <Typography.Title level={3}>Leave Request Regulations</Typography.Title>
+        <div className="text-lg">
+          <ul className="list-disc pl-6">
+            <li>
+              You can submit a leave request (excluding business trips) a
+              maximum of **2 times per month**.
+            </li>
+            <li>
+              Business trip requests have no limit and can be submitted as
+              needed.
+            </li>
+            <li>
+              Leave requests (including business trips) must be submitted no
+              later than the **end of the same month** for the date you wish to
+              take leave. For example, if you want to apply for leave on
+              **November 12**, you must submit the request by **November 30**.
+            </li>
+            <li>
+              Ensure your leave request is approved before the leave date to
+              avoid any misunderstandings.
+            </li>
+            <li>
+              In case of emergencies, contact HR directly and follow up with a
+              formal request later.
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   );
 };

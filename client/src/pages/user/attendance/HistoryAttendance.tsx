@@ -4,8 +4,11 @@ import axiosInstance from "../../../axios/axiosInstance";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import dayjs, { Dayjs } from "dayjs";
+import { useNavigate } from "react-router-dom";
 
 const HistoryAttendance = () => {
+  const navigate = useNavigate();
+
   const token = localStorage.getItem("token") || null;
   const decodeToken: IDecodeToken | null = token ? jwtDecode(token) : null;
   const user_id = decodeToken?.id;
@@ -14,13 +17,13 @@ const HistoryAttendance = () => {
   const vietnamTime = new Date(
     today.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
   );
-
-  const [dataAttendance, setDataAttendance] = useState<IDataAttendance[]>([]);
-  const [daysInMonth, setDaysInMonth] = useState<IDayIsMonth[]>([]);
   const [selectedMonth, setSelectedMonth] = useState<ISelectedMonth>({
     month: vietnamTime.getMonth() + 1,
     year: vietnamTime.getFullYear(),
   });
+
+  const [dataAttendance, setDataAttendance] = useState<IDataAttendance[]>([]);
+  const [daysInMonth, setDaysInMonth] = useState<IDayIsMonth[]>([]);
   const [selectDetailDay, setSelectedDetailDay] =
     useState<IDataAttendance | null>();
   const [visibleDetail, setVisibleDetail] = useState(false);
@@ -128,6 +131,8 @@ const HistoryAttendance = () => {
         return "bg-orange-200";
       case "Weekend":
         return "bg-gray-200";
+      case "On A Business Trip":
+        return "bg-teal-200";
       default:
         return "bg-white";
     }
@@ -145,6 +150,7 @@ const HistoryAttendance = () => {
       </Typography.Title>
       <div className="flex justify-between items-center mb-4">
         <DatePicker
+          size="large"
           picker="month"
           placeholder="Select Month"
           onChange={handleMonthChange}
@@ -223,6 +229,11 @@ const HistoryAttendance = () => {
               className="bg-cyan-400 hover:!bg-cyan-500"
               type="primary"
               size="large"
+              onClick={() =>
+                navigate(
+                  `/user/requests/attendance?date=${selectDetailDay.date}`
+                )
+              }
             >
               Submit Attendance Adjustment Request
             </Button>

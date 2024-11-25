@@ -98,18 +98,18 @@ const Attendance = () => {
           {data.map((item, index) => (
             <tr className="border-b border-gray-300" key={index}>
               <td>{index + 1}</td>
-              <td>{item.user_id.name}</td>
-              <td>{item.user_id.role}</td>
+              <td>{item?.user_id?.name}</td>
+              <td>{item?.user_id?.role}</td>
               <td>
-                {item.check_in ? (
-                  item.check_in
+                {item?.check_in ? (
+                  item?.check_in
                 ) : (
                   <span className="text-gray-500 italic">N/A</span>
                 )}
               </td>
               <td>
-                {item.check_out ? (
-                  item.check_out
+                {item?.check_out ? (
+                  item?.check_out
                 ) : (
                   <span className="text-gray-500 italic">N/A</span>
                 )}
@@ -117,10 +117,10 @@ const Attendance = () => {
               <td>
                 <span
                   className={`px-4 py-1 rounded-lg ${getStatusStyle(
-                    item.status
+                    item?.status
                   )}`}
                 >
-                  {item.status}
+                  {item?.status}
                 </span>
               </td>
               <td>
@@ -130,7 +130,7 @@ const Attendance = () => {
                   icon={<IoEyeOutline size={20} />}
                   onClick={() =>
                     navigate(
-                      `/admin/users/detail/${item.user_id._id}/attendance`
+                      `/admin/users/detail/${item?.user_id?._id}/attendance`
                     )
                   }
                 />

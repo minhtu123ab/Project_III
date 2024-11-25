@@ -1,14 +1,26 @@
-import { Button, message } from "antd";
-import { useEffect, useRef, useState } from "react";
-import { IoCreateOutline, IoTrashOutline } from "react-icons/io5";
+import { Button, DatePicker, message } from "antd";
+import { useEffect, useRef, useState, useCallback } from "react";
+import {
+  IoAddCircleOutline,
+  IoCreateOutline,
+  IoTrashOutline,
+} from "react-icons/io5";
 import axiosInstance from "../../../../axios/axiosInstance";
 import axios from "axios";
-import ActionHolidays from "./ActionHolidays";
 import ModalActive from "./ModalActive";
 import ModalDelete from "../../../../components/ModalDelete";
+import dayjs, { Dayjs } from "dayjs";
 
 const TableHolidays = () => {
   const [data, setData] = useState<IDataHolidayApi[]>([]);
+
+  const today = new Date();
+  const vietnamTime = new Date(
+    today.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
+  );
+  const [selectedYear, setSelectedYear] = useState<ISelectedYear>({
+    year: vietnamTime.getFullYear(),
+  });
 
   const handleModalAction = useRef<IHandleModal>(null);
   const handleModalDeleteRef = useRef<IHandleModal>(null);
@@ -24,6 +36,12 @@ const TableHolidays = () => {
     date: "",
     isPast: false,
   });
+
+  const handleModalActionCreate = useRef<IHandleModal>(null);
+
+  const handleModalCreate = () => {
+    handleModalActionCreate.current?.openModal();
+  };
 
   const handleModal = (holiday: IDataHolidayApi) => {
     setDataEdit({
@@ -47,9 +65,12 @@ const TableHolidays = () => {
     handleModalDeleteRef.current?.openModal();
   };
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
-      const response = await axiosInstance.get("/holiday");
+      const year = selectedYear?.year || new Date().getFullYear();
+      const response = await axiosInstance.get("/holiday", {
+        params: { year },
+      });
       setData(response.data.holidays);
     } catch (err) {
       console.error(err);
@@ -59,15 +80,41 @@ const TableHolidays = () => {
         message.error("An unexpected error occurred");
       }
     }
-  };
+  }, [selectedYear]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData, selectedYear]);
+
+  const handleMonthChange = (date: Dayjs | null) => {
+    if (date) {
+      setSelectedYear({
+        year: date.year(),
+      });
+    }
+  };
 
   return (
     <div>
-      <ActionHolidays fetchData={fetchData} />
+      <div className="flex justify-between">
+        <DatePicker
+          size="large"
+          picker="year"
+          placeholder="Select Year"
+          onChange={handleMonthChange}
+          value={selectedYear ? dayjs().set("year", selectedYear.year) : null}
+        />
+        <Button
+          onClick={handleModalCreate}
+          size="large"
+          type="primary"
+          icon={<IoAddCircleOutline size={20} />}
+          className="bg-cyan-400 hover:!bg-cyan-500 text-white"
+        >
+          Add New Holiday
+        </Button>
+        <ModalActive ref={handleModalActionCreate} fetchData={fetchData} />
+      </div>
       <div className="flex gap-5 items-center mt-5">
         <div className="flex gap-2 items-center">
           <div className="w-2 h-2 rounded-full bg-cyan-300"></div>

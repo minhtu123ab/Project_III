@@ -1,9 +1,10 @@
-import { message, Typography, Button } from "antd";
-import { useEffect, useRef, useState } from "react";
+import { message, Typography, Button, DatePicker } from "antd";
+import { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import axiosInstance from "../../../axios/axiosInstance";
 import { IoTrashOutline } from "react-icons/io5";
 import ModalDelete from "../../../components/ModalDelete";
+import dayjs, { Dayjs } from "dayjs";
 
 interface IDataDeleteRequest extends IDataRequest {
   name: string;
@@ -16,12 +17,26 @@ const RequestHistory = () => {
     {} as IDataDeleteRequest
   );
 
+  const today = new Date();
+  const vietnamTime = new Date(
+    today.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
+  );
+
+  const [selectedMonth, setSelectedMonth] = useState<ISelectedMonth>({
+    month: vietnamTime.getMonth() + 1,
+    year: vietnamTime.getFullYear(),
+  });
+
   const handleModalDeleteRef = useRef<IHandleModal>(null);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await axiosInstance.get("/request/user");
+      const month = selectedMonth?.month || new Date().getMonth() + 1;
+      const year = selectedMonth?.year || new Date().getFullYear();
+      const response = await axiosInstance.get("/request/user", {
+        params: { month, year },
+      });
       setDataRequest(response.data.requests);
     } catch (err) {
       console.error(err);
@@ -33,11 +48,13 @@ const RequestHistory = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedMonth]);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (selectedMonth) {
+      fetchData();
+    }
+  }, [fetchData, selectedMonth]);
 
   const handleDelete = (data: IDataRequest) => {
     setDataDelete({ ...data, name: data.title });
@@ -57,6 +74,15 @@ const RequestHistory = () => {
     }
   };
 
+  const handleMonthChange = (date: Dayjs | null) => {
+    if (date) {
+      setSelectedMonth({
+        month: date.month() + 1,
+        year: date.year(),
+      });
+    }
+  };
+
   return (
     <div className="p-4 sm:p-6 md:p-8 bg-gray-50 min-h-screen">
       <Typography.Title
@@ -65,7 +91,20 @@ const RequestHistory = () => {
       >
         History Request
       </Typography.Title>
-
+      <div className="flex justify-between items-center mb-4">
+        <DatePicker
+          size="large"
+          picker="month"
+          placeholder="Select Month"
+          onChange={handleMonthChange}
+          value={
+            selectedMonth
+              ? dayjs(`${selectedMonth.year}-${selectedMonth.month}`)
+              : null
+          }
+          className="w-full"
+        />
+      </div>
       {loading ? (
         <div className="flex justify-center items-center text-lg font-medium text-gray-600">
           Loading...

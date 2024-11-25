@@ -59,6 +59,8 @@ const App = () => {
             <Route path="attendance" element={<AttendanceRequests />} />
             <Route path="leave" element={<LeaveRequests />} />
           </Route>
+          <Route path="payroll" element={<div>Payroll</div>} />
+          <Route path="setting" element={<div>Setting</div>} />
         </Route>
         <Route path="/user" element={<User />}>
           <Route path="edit/:id" element={<EditUser />} />
@@ -81,6 +83,7 @@ const App = () => {
             <Route path="history" element={<RequestHistory />} />
           </Route>
           <Route path="setting" element={<div>Setting</div>} />
+          <Route path="change-password" element={<ChangePassword />} />
         </Route>
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>

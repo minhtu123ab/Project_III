@@ -124,6 +124,10 @@ interface ISelectedMonth {
   year: number;
 }
 
+interface ISelectedYear {
+  year: number;
+}
+
 interface IDataHoliday {
   name: string;
   date: Date | string;
@@ -163,6 +167,7 @@ interface ILeaveRequest {
     _id: string;
     name: string;
   };
+  title: string;
   description: string;
   date: Date;
   status: string;

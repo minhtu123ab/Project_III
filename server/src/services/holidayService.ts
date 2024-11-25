@@ -1,8 +1,12 @@
 import holidayModel from '~/models/holidayModel'
 
 const holidayService = {
-  getHolidays: async () => {
-    const holidays = await holidayModel.find().sort({ date: -1 })
+  getHolidays: async (year: number) => {
+    const firstDay = new Date(year, 0, 1).setHours(0, 0, 0, 0)
+    const lastDay = new Date(year, 11, 31).setHours(23, 59, 59, 999)
+    const holidays = await holidayModel
+      .find({ date: { $gte: new Date(firstDay), $lte: new Date(lastDay) } })
+      .sort({ date: -1 })
     return holidays
   },
   createHoliday: async (name: string, date: Date) => {

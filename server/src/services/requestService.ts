@@ -2,11 +2,15 @@ import attendanceModel from '~/models/attendanceModel'
 import requestModel from '~/models/requestModel'
 
 const requestService = {
-  getRequestsAttendance: async () => {
+  getRequestsAttendance: async (month: number, year: number) => {
+    const firstDay = new Date(year, month - 1, 1).setHours(0, 0, 0, 0)
+    const lastDay = new Date(year, month, 0).setHours(23, 59, 59, 999)
+
     const requests = await requestModel.aggregate([
       {
         $match: {
-          title: 'Attendance Change'
+          title: 'Attendance Change',
+          date: { $gte: new Date(firstDay), $lte: new Date(lastDay) }
         }
       },
       {
@@ -38,11 +42,14 @@ const requestService = {
     return populatedRequests
   },
 
-  getRequestsLeave: async () => {
+  getRequestsLeave: async (month: number, year: number) => {
+    const firstDay = new Date(year, month - 1, 1).setHours(0, 0, 0, 0)
+    const lastDay = new Date(year, month, 0).setHours(23, 59, 59, 999)
     const requests = await requestModel.aggregate([
       {
         $match: {
-          title: 'Leave Request'
+          title: { $in: ['Leave Request', 'Business Trip'] },
+          date: { $gte: new Date(firstDay), $lte: new Date(lastDay) }
         }
       },
       {
@@ -72,8 +79,9 @@ const requestService = {
     return populatedRequests
   },
 
-  createRequestLeave: async (user_id: string, date: Date, description: string) => {
-    const newRequest = await requestModel.create({ user_id, title: 'Leave Request', date, description })
+  createRequestLeave: async (user_id: string, date: Date, description: string, title: string) => {
+    const titleRequest = title === 'Leave' ? 'Leave Request' : 'Business Trip'
+    const newRequest = await requestModel.create({ user_id, title: titleRequest, date, description })
     return newRequest
   },
 
@@ -123,13 +131,22 @@ const requestService = {
           }
           await attendance.save()
         }
-      } else {
+      } else if (request.title === 'Leave Request') {
         if (!attendance) {
           await attendanceModel.create({ user_id: request.user_id, date: request.date, status: 'On Leave' })
         } else {
           await attendanceModel.findOneAndUpdate(
             { user_id: request.user_id, date: request.date },
             { status: 'On Leave' }
+          )
+        }
+      } else if (request.title === 'Business Trip') {
+        if (!attendance) {
+          await attendanceModel.create({ user_id: request.user_id, date: request.date, status: 'On A Business Trip' })
+        } else {
+          await attendanceModel.findOneAndUpdate(
+            { user_id: request.user_id, date: request.date },
+            { status: 'On A Business Trip' }
           )
         }
       }
@@ -152,8 +169,18 @@ const requestService = {
     return updatedRequest
   },
 
-  getRequestByUserId: async (userId: string) => {
-    const requests = await requestModel.find({ user_id: userId }).sort({ updatedAt: -1, createdAt: -1 })
+  getRequestByUserId: async (userId: string, month: number, year: number) => {
+    const firstDay = new Date(year, month - 1, 1).setHours(0, 0, 0, 0)
+    const lastDay = new Date(year, month, 0).setHours(23, 59, 59, 999)
+    const requests = await requestModel
+      .find({
+        user_id: userId,
+        createdAt: {
+          $gte: firstDay,
+          $lte: lastDay
+        }
+      })
+      .sort({ updatedAt: -1, createdAt: -1 })
     return requests
   }
 }
