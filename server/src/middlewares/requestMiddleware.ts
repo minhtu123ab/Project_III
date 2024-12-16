@@ -46,11 +46,20 @@ const requestMiddleware = {
 
     if (title === 'Leave') {
       const { month, year } = getMonthAndYearFromDate(date)
+
+      const startDate = new Date(year, month - 1, 1).setHours(0, 0, 0, 0)
+      const endDate = new Date(year, month, 0).setHours(23, 59, 59, 999)
+
+      if (isNaN(startDate) || isNaN(endDate)) {
+        res.status(400).json({ message: 'Invalid date format' })
+        return
+      }
+
       const recordCount = await requestModel.countDocuments({
         user_id,
         date: {
-          $gte: new Date(`${year}-${month}-01`),
-          $lt: new Date(`${year}-${month + 1}-01`)
+          $gte: startDate,
+          $lt: endDate
         },
         title: 'Leave Request'
       })
@@ -73,11 +82,20 @@ const requestMiddleware = {
     }
 
     const { month, year } = getMonthAndYearFromDate(date)
+
+    const startDate = new Date(year, month - 1, 1).setHours(0, 0, 0, 0)
+    const endDate = new Date(year, month, 0).setHours(23, 59, 59, 999)
+
+    if (isNaN(startDate) || isNaN(endDate)) {
+      res.status(400).json({ message: 'Invalid date format' })
+      return
+    }
+
     const recordCount = await requestModel.countDocuments({
       user_id,
       date: {
-        $gte: new Date(`${year}-${month}-01`),
-        $lt: new Date(`${year}-${month + 1}-01`)
+        $gte: startDate,
+        $lt: endDate
       },
       title: 'Attendance Change'
     })

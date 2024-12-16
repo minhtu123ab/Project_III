@@ -1,7 +1,6 @@
 import mongoose, { Document, Model } from 'mongoose'
 import userModel from './userModel'
 import holidayModel from './holidayModel'
-import getRandomTime from '~/utils/getRandomTime'
 
 interface IAttendanceModel extends Document {
   user_id: mongoose.Types.ObjectId
@@ -63,9 +62,7 @@ attendanceSchema.statics.createAttendanceForMonth = async function (month: numbe
   const users = await userModel.find({ status: { $ne: 'Resigned' } })
 
   const firstDayOfMonth = new Date(year, month - 1, 1)
-  // const lastDayOfMonth = new Date(year, month, 0)
-  const getNewDay = new Date()
-  const lastDayOfMonth = new Date(year, month, 0) < getNewDay ? new Date(year, month, 0) : getNewDay
+  const lastDayOfMonth = new Date(year, month, 0)
 
   for (let day = firstDayOfMonth; day <= lastDayOfMonth; day.setDate(day.getDate() + 1)) {
     const today = new Date(day.setHours(0, 0, 0, 0))
@@ -78,32 +75,10 @@ attendanceSchema.statics.createAttendanceForMonth = async function (month: numbe
       const existingAttendance = await this.findOne({ user_id: user._id, date: today })
 
       if (!existingAttendance && !dayHoliday && !isWeekend) {
-        const checkInTime = getRandomTime('06:30:00', '08:30:00')
-        const checkOutTime = getRandomTime('16:00:00', '18:00:00')
-        const checkInTimeCheck = new Date('1970-01-01T' + checkInTime + 'Z')
-        const checkOutTimeCheck = new Date('1970-01-01T' + checkOutTime + 'Z')
-
-        const diffInMilliseconds = checkOutTimeCheck.getTime() - checkInTimeCheck.getTime()
-        const diffInHours = diffInMilliseconds / (1000 * 60 * 60)
-        const working_hours = diffInHours.toFixed(2)
-
-        const status = () => {
-          const lateTime = new Date('1970-01-01T08:00:00Z')
-          if (checkInTimeCheck > lateTime) {
-            return 'Late'
-          } else if (parseFloat(working_hours) >= 8) {
-            return 'Present'
-          } else if (parseFloat(working_hours) > 0 && parseFloat(working_hours) < 8) {
-            return 'Under Hours'
-          }
-        }
         await this.create({
           user_id: user._id,
           date: today,
-          check_in: checkInTime,
-          check_out: checkOutTime,
-          working_hours: working_hours,
-          status: status()
+          status: 'Absent'
         })
       } else if (!existingAttendance && dayHoliday) {
         await this.create({

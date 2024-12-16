@@ -75,7 +75,7 @@ const DetailRequest = () => {
   };
 
   return (
-    <div className=" bg-gray-50 min-h-screen">
+    <div className=" bg-gray-50">
       <div className="flex justify-between items-center mb-4">
         <DatePicker
           size="large"

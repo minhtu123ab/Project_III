@@ -171,7 +171,7 @@ const requestService = {
     const requests = await requestModel
       .find({
         user_id: userId,
-        createdAt: {
+        date: {
           $gte: firstDay,
           $lte: lastDay
         }

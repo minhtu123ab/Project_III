@@ -46,29 +46,29 @@ const payrollJob = new CronJob(
 
 attendanceJob.start()
 payrollJob.start()
-;(async () => {
-  console.log('Manually triggering the job now: ', new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }))
-  try {
-    const today = new Date()
-    const month = today.getMonth() + 1
-    const year = today.getFullYear()
-    await attendanceModel.createAttendanceForMonth(month, year)
+// ;(async () => {
+//   console.log('Manually triggering the job now: ', new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }))
+//   try {
+//     const today = new Date()
+//     const month = today.getMonth() + 1
+//     const year = today.getFullYear()
+//     await attendanceModel.createAttendanceForMonth(month, year)
 
-    console.log('Attendance for the month created successfully!')
-  } catch (error) {
-    console.error('Error creating attendance for the month:', error)
-  }
-})()
-;(async () => {
-  console.log('Manually triggering the job now: ', new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }))
-  try {
-    const today = new Date()
-    const month = today.getMonth() + 1
-    const year = today.getFullYear()
-    await payrollModel.createPayrollForMonth(month - 3, year)
+//     console.log('Attendance for the month created successfully!')
+//   } catch (error) {
+//     console.error('Error creating attendance for the month:', error)
+//   }
+// })()
+// ;(async () => {
+//   console.log('Manually triggering the job now: ', new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }))
+//   try {
+//     const today = new Date()
+//     const month = today.getMonth() + 1
+//     const year = today.getFullYear()
+//     await payrollModel.createPayrollForMonth(month, year)
 
-    console.log('Payroll for the month created successfully!')
-  } catch (error) {
-    console.error('Error creating payroll for the month:', error)
-  }
-})()
+//     console.log('Payroll for the month created successfully!')
+//   } catch (error) {
+//     console.error('Error creating payroll for the month:', error)
+//   }
+// })()

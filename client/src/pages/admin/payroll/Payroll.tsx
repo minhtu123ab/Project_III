@@ -34,7 +34,7 @@ const Payroll = () => {
 
   const fetchPayrolls = useCallback(async () => {
     try {
-      const month = searchParams.get("month") || new Date().getMonth() + 1;
+      const month = searchParams.get("month") || new Date().getMonth();
       const year = searchParams.get("year") || new Date().getFullYear();
       const name = searchParams.get("name");
       const page = searchParams.get("page")
@@ -103,7 +103,7 @@ const Payroll = () => {
 
   const exportToCSV = async (fileName: string) => {
     try {
-      const month = searchParams.get("month") || new Date().getMonth() + 1;
+      const month = searchParams.get("month") || new Date().getMonth();
       const year = searchParams.get("year") || new Date().getFullYear();
       const response = await axiosInstance.get("/payroll/all", {
         params: { month, year },
@@ -155,7 +155,7 @@ const Payroll = () => {
             onChange={handleMonthChange}
             value={dayjs(
               `${searchParams.get("year") || new Date().getFullYear()}-${
-                searchParams.get("month") || new Date().getMonth() + 1
+                searchParams.get("month") || new Date().getMonth()
               }`
             )}
           />

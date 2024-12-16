@@ -1,3 +1,4 @@
+import attendanceModel from '~/models/attendanceModel'
 import holidayModel from '~/models/holidayModel'
 
 const holidayService = {
@@ -10,9 +11,29 @@ const holidayService = {
     return holidays
   },
   createHoliday: async (name: string, date: Date) => {
-    const newHoliday = await holidayModel.create({ name, date })
-    return newHoliday
+    try {
+      const newHoliday = await holidayModel.create({ name, date })
+
+      const attendanceCheck = await attendanceModel.find({
+        date: newHoliday.date.setHours(0, 0, 0, 0)
+      })
+
+      if (!attendanceCheck) {
+        return newHoliday
+      }
+
+      for (const item of attendanceCheck) {
+        item.status = 'Holiday'
+        await item.save()
+      }
+
+      return newHoliday
+    } catch (error) {
+      console.error('Error creating holiday:', error)
+      throw new Error('Error creating holiday')
+    }
   },
+
   updateHoliday: async (name: string, id: string, date: Date) => {
     const updatedHoliday = await holidayModel.findByIdAndUpdate(id, { name, date })
     return updatedHoliday

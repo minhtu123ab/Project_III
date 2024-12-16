@@ -34,7 +34,6 @@ const RequestAttendance = () => {
       data.date = new Date(
         new Date(data.date).setHours(0, 0, 0, 0)
       ).toISOString();
-      console.log(data);
       await axiosInstance.post("/request/attendance", data);
       message.success("Attendance request submitted successfully");
       reset();

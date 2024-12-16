@@ -26,13 +26,15 @@ const dashboardController = {
       const today = new Date().setHours(0, 0, 0, 0)
       const absentAndBusiness = await attendanceModel.countDocuments({
         date: today,
-        status: { $in: ['Absent', 'On A Business Trip'] }
+        status: { $in: ['Present', 'On A Business Trip'] }
       })
-      const totalAttendances = await attendanceModel.countDocuments()
+      const totalAttendances = await attendanceModel.countDocuments({
+        date: today
+      })
       const attendanceRate = (absentAndBusiness / totalAttendances) * 100
 
-      const firstDay = new Date(year, month - 1, 1).setHours(0, 0, 0, 0)
-      const lastDay = new Date(year, month, 0).setHours(23, 59, 59, 999)
+      const firstDay = new Date(year, month, 1).setHours(0, 0, 0, 0)
+      const lastDay = new Date(year, month + 1, 0).setHours(23, 59, 59, 999)
       const recentApplications = await requestModel.countDocuments({
         date: { $gte: new Date(firstDay), $lte: new Date(lastDay) }
       })
