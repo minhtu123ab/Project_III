@@ -54,7 +54,7 @@ const ModalDetails = forwardRef(
         <tbody>
           {[
             { label: "Total Leave", value: `${data?.total_leaves} days` },
-            { label: "Total Late", value: `${data?.total_late} times` },
+            { label: "Total Days Late", value: `${data?.total_late} days` },
             { label: "Total Absent", value: `${data?.total_absent} days` },
             {
               label: "Total Under Hours",
@@ -64,7 +64,7 @@ const ModalDetails = forwardRef(
             { label: "Total Holidays", value: `${data?.total_holidays} days` },
             {
               label: "Total Business Trip",
-              value: `${data?.total_business_trip} trips`,
+              value: `${data?.total_business_trip} days`,
             },
             {
               label: "Total Salary",

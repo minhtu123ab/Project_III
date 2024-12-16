@@ -72,14 +72,18 @@ const PayrollUser = () => {
           category: "Total Present",
           details: payroll?.total_present,
         },
-        { key: "4", category: "Total Late", details: payroll?.total_late },
+        { key: "4", category: "Total Days Late", details: payroll?.total_late },
         { key: "5", category: "Total Absent", details: payroll?.total_absent },
         {
           key: "6",
           category: "Total Holidays",
           details: payroll?.total_holidays,
         },
-        { key: "7", category: "Total Hours", details: payroll?.total_hours },
+        {
+          key: "7",
+          category: "Total Hours",
+          details: Number(payroll?.total_hours || 0).toFixed(2),
+        },
         {
           key: "8",
           category: "Status",
