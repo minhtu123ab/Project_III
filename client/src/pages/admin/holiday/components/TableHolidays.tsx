@@ -10,17 +10,12 @@ import axios from "axios";
 import ModalActive from "./ModalActive";
 import ModalDelete from "../../../../components/ModalDelete";
 import dayjs, { Dayjs } from "dayjs";
+import { useSearchParams } from "react-router-dom";
 
 const TableHolidays = () => {
   const [data, setData] = useState<IDataHolidayApi[]>([]);
 
-  const today = new Date();
-  const vietnamTime = new Date(
-    today.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
-  );
-  const [selectedYear, setSelectedYear] = useState<ISelectedYear>({
-    year: vietnamTime.getFullYear(),
-  });
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const handleModalAction = useRef<IHandleModal>(null);
   const handleModalDeleteRef = useRef<IHandleModal>(null);
@@ -67,7 +62,7 @@ const TableHolidays = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      const year = selectedYear?.year || new Date().getFullYear();
+      const year = searchParams.get("year") || new Date().getFullYear();
       const response = await axiosInstance.get("/holiday", {
         params: { year },
       });
@@ -80,17 +75,16 @@ const TableHolidays = () => {
         message.error("An unexpected error occurred");
       }
     }
-  }, [selectedYear]);
+  }, [searchParams]);
 
   useEffect(() => {
     fetchData();
-  }, [fetchData, selectedYear]);
+  }, [fetchData, searchParams]);
 
   const handleMonthChange = (date: Dayjs | null) => {
     if (date) {
-      setSelectedYear({
-        year: date.year(),
-      });
+      searchParams.set("year", date.year().toString());
+      setSearchParams(searchParams);
     }
   };
 
@@ -102,7 +96,9 @@ const TableHolidays = () => {
           picker="year"
           placeholder="Select Year"
           onChange={handleMonthChange}
-          value={selectedYear ? dayjs().set("year", selectedYear.year) : null}
+          value={dayjs(
+            `${searchParams.get("year") || new Date().getFullYear()}`
+          )}
         />
         <Button
           onClick={handleModalCreate}

@@ -31,6 +31,10 @@ const RequestAttendance = () => {
     try {
       data.check_in = data.check_in + ":00";
       data.check_out = data.check_out + ":00";
+      data.date = new Date(
+        new Date(data.date).setHours(0, 0, 0, 0)
+      ).toISOString();
+      console.log(data);
       await axiosInstance.post("/request/attendance", data);
       message.success("Attendance request submitted successfully");
       reset();
@@ -58,7 +62,7 @@ const RequestAttendance = () => {
 
   return (
     <div className="p-4 sm:p-6 md:p-8 !pt-4">
-      <Typography.Title level={1} className="!text-cyan-800 text-center mb-6">
+      <Typography.Title level={1} className="!text-cyan-500 text-center mb-6">
         Attendance Request
       </Typography.Title>
       <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>

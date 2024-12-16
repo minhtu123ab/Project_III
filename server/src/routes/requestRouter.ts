@@ -29,4 +29,11 @@ requestRouter.put('/response/:id', verifyAdmin, requestMiddleware.responseReques
 
 requestRouter.get('/user', requestMiddleware.getRequestByUserId, requestController.getRequestByUserId)
 
+requestRouter.get(
+  '/user-admin',
+  verifyAdmin,
+  requestMiddleware.getRequestByUserId,
+  requestController.getRequestByUserIdAdmin
+)
+
 export default requestRouter

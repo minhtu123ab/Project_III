@@ -1,24 +1,19 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../axios/axiosInstance";
 import axios from "axios";
-import { DatePicker, message } from "antd";
+import { DatePicker, message, Typography } from "antd";
 import dayjs, { Dayjs } from "dayjs";
+import { useSearchParams } from "react-router-dom";
 
 const UserHolidays = () => {
   const [data, setData] = useState<IDataHolidayApi[]>([]);
 
-  const today = new Date();
-  const vietnamTime = new Date(
-    today.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
-  );
-  const [selectedYear, setSelectedYear] = useState<ISelectedYear>({
-    year: vietnamTime.getFullYear(),
-  });
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const year = selectedYear?.year || new Date().getFullYear();
+        const year = searchParams.get("year") || new Date().getFullYear();
         const response = await axiosInstance.get("/holiday", {
           params: { year },
         });
@@ -32,22 +27,23 @@ const UserHolidays = () => {
         }
       }
     };
-    if (selectedYear) {
-      fetchData();
-    }
-  }, [selectedYear]);
+    fetchData();
+  }, [searchParams]);
 
   const handleMonthChange = (date: Dayjs | null) => {
     if (date) {
-      setSelectedYear({
-        year: date.year(),
-      });
+      searchParams.set("year", date.year().toString());
+      setSearchParams(searchParams);
     }
   };
 
   return (
-    <div className="flex flex-col gap-3">
-      <h1 className="text-2xl font-semibold">Holidays</h1>
+    <div className="flex flex-col">
+      <div className="text-center">
+        <Typography.Title level={1} className="!text-cyan-500">
+          Holidays
+        </Typography.Title>
+      </div>
       <div>
         <div className="flex justify-between items-center mb-4">
           <DatePicker
@@ -55,7 +51,9 @@ const UserHolidays = () => {
             picker="year"
             placeholder="Select Year"
             onChange={handleMonthChange}
-            value={selectedYear ? dayjs().set("year", selectedYear.year) : null}
+            value={dayjs(
+              `${searchParams.get("year") || new Date().getFullYear()}`
+            )}
             className="w-full"
           />
         </div>

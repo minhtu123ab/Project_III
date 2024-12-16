@@ -4,21 +4,15 @@ import { IoCheckmarkOutline, IoCloseOutline } from "react-icons/io5";
 import axiosInstance from "../../../axios/axiosInstance";
 import axios from "axios";
 import dayjs, { Dayjs } from "dayjs";
+import { useSearchParams } from "react-router-dom";
 
 const LeaveRequests = () => {
-  const today = new Date();
-  const vietnamTime = new Date(
-    today.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
-  );
-  const [selectedMonth, setSelectedMonth] = useState<ISelectedMonth>({
-    month: vietnamTime.getMonth() + 1,
-    year: vietnamTime.getFullYear(),
-  });
+  const [searchParams, setSearchParams] = useSearchParams();
   const [requests, setRequests] = useState<ILeaveRequest[]>([]);
   const fetchRequests = useCallback(async () => {
     try {
-      const month = selectedMonth?.month || new Date().getMonth() + 1;
-      const year = selectedMonth?.year || new Date().getFullYear();
+      const month = searchParams.get("month") || new Date().getMonth() + 1;
+      const year = searchParams.get("year") || new Date().getFullYear();
       const response = await axiosInstance.get("/request/leave", {
         params: { month, year },
       });
@@ -31,13 +25,11 @@ const LeaveRequests = () => {
         message.error("An unexpected error occurred");
       }
     }
-  }, [selectedMonth]);
+  }, [searchParams]);
 
   useEffect(() => {
-    if (selectedMonth) {
-      fetchRequests();
-    }
-  }, [fetchRequests, selectedMonth]);
+    fetchRequests();
+  }, [fetchRequests, searchParams]);
 
   const handleApprove = async (id: string) => {
     try {
@@ -75,10 +67,9 @@ const LeaveRequests = () => {
 
   const handleMonthChange = (date: Dayjs | null) => {
     if (date) {
-      setSelectedMonth({
-        month: date.month() + 1,
-        year: date.year(),
-      });
+      searchParams.set("month", (date.month() + 1).toString());
+      searchParams.set("year", date.year().toString());
+      setSearchParams(searchParams);
     }
   };
 
@@ -87,17 +78,17 @@ const LeaveRequests = () => {
       <h1 className="text-2xl text-gray-800 font-semibold mt-2">
         Leave Requests
       </h1>
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center">
         <DatePicker
           size="large"
           picker="month"
           placeholder="Select Month"
           onChange={handleMonthChange}
-          value={
-            selectedMonth
-              ? dayjs(`${selectedMonth.year}-${selectedMonth.month}`)
-              : null
-          }
+          value={dayjs(
+            `${searchParams.get("year") || new Date().getFullYear()}-${
+              searchParams.get("month") || new Date().getMonth() + 1
+            }`
+          )}
           className="w-full"
         />
       </div>

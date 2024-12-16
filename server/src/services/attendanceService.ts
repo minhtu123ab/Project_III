@@ -89,8 +89,31 @@ const attendanceService = {
     })
   },
 
-  getAllAttendanceByDay: async (day: Date) => {
-    return attendanceModel.find({ date: day }).populate('user_id', 'name role').sort({ 'user_id.name': 'asc' })
+  getAllAttendanceByDay: async (day: Date, limit: number, page: number, name?: string) => {
+    const query: { date: Date } = { date: day }
+    const startIndex = (page - 1) * limit
+
+    const totalCount = await attendanceModel
+      .find(query)
+      .populate({
+        path: 'user_id',
+        match: name ? { name: { $regex: name, $options: 'i' } } : undefined
+      })
+      .then((results) => results.filter((item) => item.user_id !== null).length)
+
+    const attendances = (
+      await attendanceModel
+        .find(query)
+        .populate({
+          path: 'user_id',
+          select: 'name role',
+          match: name ? { name: { $regex: name, $options: 'i' } } : undefined
+        })
+        .sort({ 'user_id.name': 'asc' })
+        .then((results) => results.filter((item) => item.user_id !== null))
+    ).slice(startIndex, startIndex + limit)
+
+    return { attendances, totalCount }
   }
 }
 

@@ -40,7 +40,7 @@ const RequestLeave = () => {
 
   return (
     <div className="p-4 sm:p-6 md:p-8 !pt-4">
-      <Typography.Title level={1} className="!text-cyan-800 text-center mb-6">
+      <Typography.Title level={1} className="!text-cyan-500 text-center mb-6">
         Leave Request
       </Typography.Title>
       <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>

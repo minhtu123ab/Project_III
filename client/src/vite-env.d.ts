@@ -179,3 +179,34 @@ interface IAttendanceChangeRequest extends ILeaveRequest {
   check_in: string;
   check_out: string;
 }
+
+interface IDataPayroll {
+  _id: string;
+  user_id: {
+    _id: string;
+    name: string;
+  };
+  month: number;
+  year: number;
+  salary: number;
+  total_leaves: number;
+  total_late: number;
+  total_absent: number;
+  total_under_hours: number;
+  total_present: number;
+  total_holidays: number;
+  total_business_trip: number;
+  total_salary: number;
+  total_hours: number;
+  createdAt: string;
+  updatedAt: string;
+  status: "Pending" | "Completed" | "Rejected";
+}
+
+interface DashboardData {
+  totalEmployees: number;
+  totalPayroll: number;
+  attendanceRate: number;
+  recentApplications: number;
+  holidaysUpcoming: number;
+}

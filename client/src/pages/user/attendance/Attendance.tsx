@@ -70,9 +70,6 @@ const AttendancePage = () => {
 
   const handleCheckIn = async () => {
     try {
-      const checkInTime = new Date().toLocaleTimeString();
-      setCheckInTime(checkInTime);
-
       if (location) {
         await axiosInstance.post("/attendance/check-in", {
           user_id,
@@ -80,6 +77,8 @@ const AttendancePage = () => {
           longitude: location.lng,
         });
         message.success("Checked in successfully");
+        const checkInTime = new Date().toLocaleTimeString();
+        setCheckInTime(checkInTime);
         fetchData();
       } else {
         message.error("Unable to get your location.");
@@ -96,8 +95,6 @@ const AttendancePage = () => {
 
   const handleCheckOut = async () => {
     try {
-      const checkOutTime = new Date().toLocaleTimeString();
-      setCheckOutTime(checkOutTime);
       if (location) {
         await axiosInstance.post("/attendance/check-out", {
           user_id,
@@ -105,6 +102,8 @@ const AttendancePage = () => {
           longitude: location.lng,
         });
         message.success("Checked out successfully");
+        const checkOutTime = new Date().toLocaleTimeString();
+        setCheckOutTime(checkOutTime);
         fetchData();
       } else {
         message.error("Unable to get your location.");
@@ -134,7 +133,7 @@ const AttendancePage = () => {
   return (
     <div className="p-2 sm:p-2">
       <div className="mb-5 text-center">
-        <Typography.Title level={1} className="!text-cyan-800">
+        <Typography.Title level={1} className="!text-cyan-500">
           Check Attendance
         </Typography.Title>
         <div className="text-xl font-semibold text-gray-600">
@@ -217,7 +216,7 @@ const AttendancePage = () => {
           <Typography.Title level={3}>Attendance Regulations</Typography.Title>
           <div className="text-lg">
             <ul className="list-disc pl-6">
-              <li>Check-in before 9:00 AM to mark your attendance.</li>
+              <li>Check-in before 8:00 AM to mark your attendance.</li>
               <li>Check-out after completing your workday.</li>
               <li>If you forget to check-in or check-out, please inform HR.</li>
               <li>

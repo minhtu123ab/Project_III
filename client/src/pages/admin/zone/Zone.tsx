@@ -40,6 +40,11 @@ const Zone = () => {
           (error) => {
             console.error(error);
             message.error("Unable to get your location.");
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0,
           }
         );
       }

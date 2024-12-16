@@ -105,8 +105,6 @@ const userMiddleware = {
   adminUpdateUser: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { name, role, base_salary, phone, national_id, status } = req.body
 
-    console.log(req.body)
-
     if (!name || !role || !base_salary || !phone || !national_id || !status) {
       res.status(400).json({ message: 'All fields are required' })
       return

@@ -1,9 +1,13 @@
-import { Button, Input, message } from "antd";
+import { Button, DatePicker, message } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../axios/axiosInstance";
 import { IoEyeOutline } from "react-icons/io5";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import dayjs, { Dayjs } from "dayjs";
+import { LIMIT } from "../../../globalVariable";
+import Pagination from "../../../components/Pagination";
+import InputSearch from "../../../components/InputSearch";
 
 interface IDataAttendanceAllByDay {
   _id: string;
@@ -20,18 +24,25 @@ interface IDataAttendanceAllByDay {
 
 const Attendance = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialDay =
-    searchParams.get("day") || new Date().toISOString().split("T")[0];
+  const initialDay = searchParams.get("day") || dayjs().format("YYYY-MM-DD");
   const [day, setDay] = useState<string>(initialDay);
   const [data, setData] = useState<IDataAttendanceAllByDay[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosInstance.get(`/attendance/day?day=${day}`);
+        const name = searchParams.get("name");
+        const page = searchParams.get("page")
+          ? parseInt(searchParams.get("page")!)
+          : 1;
+        const response = await axiosInstance.get(`/attendance/day`, {
+          params: { day, name, page, limit: LIMIT },
+        });
         setData(response.data.attendances);
+        setTotalCount(response.data.totalCount);
       } catch (err) {
         console.error(err);
         if (axios.isAxiosError(err) && err.response) {
@@ -42,12 +53,14 @@ const Attendance = () => {
       }
     };
     fetchData();
+  }, [day, searchParams]);
 
-    setSearchParams({ day });
-  }, [day, setSearchParams]);
-
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDay(e.target.value);
+  const handleDateChange = (date: Dayjs | null) => {
+    if (date) {
+      const selectedDate = date.format("YYYY-MM-DD");
+      setDay(selectedDate);
+      setSearchParams({ day: selectedDate });
+    }
   };
 
   const getStatusStyle = (status: string) => {
@@ -66,6 +79,8 @@ const Attendance = () => {
         return "bg-orange-200 text-orange-600";
       case "Weekend":
         return "bg-gray-200 text-gray-600";
+      case "On A Business Trip":
+        return "bg-teal-200 text-teal-600";
       default:
         return "bg-gray-200 text-gray-600";
     }
@@ -74,14 +89,15 @@ const Attendance = () => {
   return (
     <div className="flex flex-col gap-3">
       <h1 className="text-2xl font-semibold">Attendance</h1>
-      <form>
-        <Input
-          type="date"
-          value={day}
+      <div className="flex justify-between items-center">
+        <InputSearch />
+        <DatePicker
+          value={dayjs(day)}
           onChange={handleDateChange}
+          format="YYYY-MM-DD"
           size="large"
         />
-      </form>
+      </div>
       <table className="min-w-full border-collapse">
         <thead>
           <tr>
@@ -139,6 +155,7 @@ const Attendance = () => {
           ))}
         </tbody>
       </table>
+      <Pagination totalCount={totalCount} />
     </div>
   );
 };

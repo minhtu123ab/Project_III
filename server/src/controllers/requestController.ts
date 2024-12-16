@@ -149,6 +149,27 @@ const requestController = {
         res.status(500).json({ message: 'An unexpected error occurred' })
       }
     }
+  },
+
+  getRequestByUserIdAdmin: async (req: Request, res: Response) => {
+    try {
+      const { month, year, userId } = req.query
+      if (!userId) {
+        throw new Error('User ID is required')
+      }
+      const requests = await requestService.getRequestByUserId(
+        userId as string,
+        parseInt(month as string),
+        parseInt(year as string)
+      )
+      res.status(200).json({ requests })
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        res.status(400).json({ message: error.message })
+      } else {
+        res.status(500).json({ message: 'An unexpected error occurred' })
+      }
+    }
   }
 }
 

@@ -145,7 +145,7 @@ const HistoryAttendance = () => {
 
   return (
     <div className="p-2 w-full mx-auto">
-      <Typography.Title level={1} className="!text-cyan-800 text-center">
+      <Typography.Title level={1} className="!text-cyan-500 text-center">
         History Attendance
       </Typography.Title>
       <div className="flex justify-between items-center mb-4">

@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import ControllerInput from "../../../../components/ControllerInput";
 import ControllerSelect from "../../../../components/ControllerSelect";
 import data from "./data/dataController.json";
+import { jwtDecode } from "jwt-decode";
 
 const schema = yup.object().shape({
   image: yup.mixed<File | string>(),
@@ -34,6 +35,10 @@ const EditUser = () => {
   const [loading, setLoading] = useState(false);
   const user = useFetchUser();
   const navigate = useNavigate();
+
+  const token = localStorage.getItem("token");
+  const decodeToken: IDecodeToken = jwtDecode(token || "");
+
   const {
     control,
     handleSubmit,
@@ -87,10 +92,10 @@ const EditUser = () => {
       formData.append("phone", data.phone);
       formData.append("national_id", data.national_id);
       formData.append("gender", data.gender);
-      user.isAdmin && formData.append("base_salary", data.base_salary);
-      user.isAdmin && formData.append("role", data.role);
-      user.isAdmin && formData.append("isAdmin", String(data.isAdmin));
-      user.isAdmin && formData.append("status", data.status);
+      decodeToken.isAdmin && formData.append("base_salary", data.base_salary);
+      decodeToken.isAdmin && formData.append("role", data.role);
+      decodeToken.isAdmin && formData.append("isAdmin", String(data.isAdmin));
+      decodeToken.isAdmin && formData.append("status", data.status);
       formData.append("address", data.address || "");
       formData.append(
         "birth_date",
@@ -100,13 +105,13 @@ const EditUser = () => {
         formData.append("image", data.image);
       }
       await axiosInstance.put(
-        user.isAdmin
+        decodeToken.isAdmin
           ? `/user/admin/update/${user._id}`
           : `/user/update/${user._id}`,
         formData
       );
       message.success("Updated successfully");
-      user.isAdmin
+      decodeToken.isAdmin
         ? navigate("/admin/users")
         : navigate(`/user/detail/${user._id}/profile`);
     } catch (err) {
@@ -150,7 +155,7 @@ const EditUser = () => {
                 required={item.required}
                 data={item.data}
                 disabled={
-                  !user.isAdmin &&
+                  !decodeToken.isAdmin &&
                   (item.name === "role" ||
                     item.name === "isAdmin" ||
                     item.name === "status")
@@ -165,7 +170,7 @@ const EditUser = () => {
                 labelName={item.labelName}
                 required={item.required}
                 type={item.type}
-                disabled={!user.isAdmin && item.name === "base_salary"}
+                disabled={!decodeToken.isAdmin && item.name === "base_salary"}
               />
             )
           )}

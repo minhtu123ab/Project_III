@@ -27,6 +27,9 @@ import LeaveRequests from "./pages/admin/request/LeaveRequests";
 import Attendance from "./pages/admin/attendance/Attendance";
 import AttendanceDetail from "./pages/admin/user/detail/components/AttendanceDetail";
 import Leave from "./pages/admin/user/detail/components/Leave";
+import DetailRequest from "./pages/admin/user/detail/components/Request";
+import Payroll from "./pages/admin/payroll/Payroll";
+import PayrollUser from "./pages/user/payroll/PayrollUser";
 
 const App = () => {
   return (
@@ -47,6 +50,7 @@ const App = () => {
             <Route path="profile" element={<Profile />} />
             <Route path="attendance" element={<AttendanceDetail />} />
             <Route path="leave" element={<Leave />} />
+            <Route path="request" element={<DetailRequest />} />
           </Route>
           <Route path="users/edit/:id" element={<EditUser />} />
           <Route path="change-password" element={<ChangePassword />} />
@@ -59,7 +63,7 @@ const App = () => {
             <Route path="attendance" element={<AttendanceRequests />} />
             <Route path="leave" element={<LeaveRequests />} />
           </Route>
-          <Route path="payroll" element={<div>Payroll</div>} />
+          <Route path="payroll" element={<Payroll />} />
           <Route path="setting" element={<div>Setting</div>} />
         </Route>
         <Route path="/user" element={<User />}>
@@ -74,8 +78,8 @@ const App = () => {
             <Route path="check" element={<AttendancePage />} />
             <Route path="history" element={<HistoryAttendance />} />
           </Route>
-          <Route path="payroll" element={<div>Payroll</div>} />
           <Route path="holidays" element={<UserHolidays />} />
+          <Route path="payroll" element={<PayrollUser />} />
           <Route path="requests" element={<LayoutRequest />}>
             <Route path="" element={<Navigate to="attendance" />} />
             <Route path="attendance" element={<RequestAttendance />} />

@@ -1,37 +1,17 @@
-import { Button, Input } from "antd";
-import { useState } from "react";
-import { IoAddCircleOutline, IoSearchOutline } from "react-icons/io5";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Button } from "antd";
+import { IoAddCircleOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+import InputSearch from "../../../../components/InputSearch";
 
 const ActionUsers = () => {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [search, setSearch] = useState<string>(searchParams.get("name") || "");
 
   const handleClickCreate = () => {
     navigate("/admin/users/create");
   };
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    searchParams.set("name", search);
-    setSearchParams(searchParams);
-    if (search === "") {
-      searchParams.delete("name");
-      setSearchParams(searchParams);
-    }
-  };
   return (
     <div className="flex justify-between">
-      <form onSubmit={handleSearch}>
-        <Input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          size="large"
-          placeholder="Search"
-          prefix={<IoSearchOutline size={20} />}
-          className="w-72"
-        />
-      </form>
+      <InputSearch />
       <Button
         onClick={handleClickCreate}
         size="large"

@@ -7,11 +7,11 @@ const attendanceRouter = express.Router()
 
 attendanceRouter.use(verifyToken)
 
-// attendanceRouter.post('/check-in', attendanceMiddleware.checkLocation, attendanceController.checkIn)
-attendanceRouter.post('/check-in', attendanceController.checkIn)
+attendanceRouter.post('/check-in', attendanceMiddleware.checkLocation, attendanceController.checkIn)
+// attendanceRouter.post('/check-in', attendanceController.checkIn)
 
-// attendanceRouter.post('/check-out', attendanceMiddleware.checkLocation, attendanceController.checkOut)
-attendanceRouter.post('/check-out', attendanceController.checkOut)
+attendanceRouter.post('/check-out', attendanceMiddleware.checkLocation, attendanceController.checkOut)
+// attendanceRouter.post('/check-out', attendanceController.checkOut)
 
 attendanceRouter.get('/day', attendanceMiddleware.getAllAttendanceByDay, attendanceController.getAllAttendanceByDay)
 

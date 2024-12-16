@@ -123,12 +123,8 @@ const requestService = {
           })
           await newAttendance.save()
         } else {
-          if (request.check_in !== null) {
-            attendance.check_in = request.check_in
-          }
-          if (request.check_out !== null) {
-            attendance.check_out = request.check_out
-          }
+          attendance.check_in = request.check_in!
+          attendance.check_out = request.check_out!
           await attendance.save()
         }
       } else if (request.title === 'Leave Request') {

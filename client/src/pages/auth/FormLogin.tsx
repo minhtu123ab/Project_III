@@ -41,7 +41,9 @@ const FormLogin: React.FC<IFormLoginProps> = ({ handleClickForgot }) => {
       message.success("Logged in successfully");
       const decode: IDecodeToken = jwtDecode(response.data.token);
       const { isAdmin } = decode;
-      isAdmin ? navigate("/admin/users") : navigate("/user/attendance/check");
+      isAdmin
+        ? navigate("/admin/dashboard")
+        : navigate("/user/attendance/check");
     } catch (err) {
       console.error(err);
       if (axios.isAxiosError(err)) {

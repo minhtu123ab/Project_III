@@ -87,8 +87,11 @@ const attendanceController = {
       if (typeof day === 'string' || typeof day === 'number') {
         const date = new Date(day)
         date.setHours(0, 0, 0, 0)
-        const attendances = await attendanceService.getAllAttendanceByDay(date)
-        res.status(200).json({ attendances })
+        const limit = parseInt(req.query.limit as string) || 5
+        const page = parseInt(req.query.page as string) || 1
+        const name = req.query.name as string
+        const { attendances, totalCount } = await attendanceService.getAllAttendanceByDay(date, limit, page, name)
+        res.status(200).json({ attendances, totalCount })
       } else {
         res.status(400).json({ message: 'Invalid date format' })
       }

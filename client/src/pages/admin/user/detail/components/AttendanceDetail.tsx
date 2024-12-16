@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import axiosInstance from "../../../../../axios/axiosInstance";
 import axios from "axios";
 import { DatePicker, message } from "antd";
@@ -7,22 +7,16 @@ import dayjs, { Dayjs } from "dayjs";
 
 const AttendanceDetail = () => {
   const user_id = useParams().id;
-  const today = new Date();
-  const vietnamTime = new Date(
-    today.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
-  );
 
   const [dataAttendance, setDataAttendance] = useState<IDataAttendance[]>([]);
-  const [selectedMonth, setSelectedMonth] = useState<ISelectedMonth>({
-    month: vietnamTime.getMonth() + 1,
-    year: vietnamTime.getFullYear(),
-  });
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const month = selectedMonth?.month || new Date().getMonth() + 1;
-        const year = selectedMonth?.year || new Date().getFullYear();
+        const month = searchParams.get("month") || new Date().getMonth() + 1;
+        const year = searchParams.get("year") || new Date().getFullYear();
         const response = await axiosInstance.get(
           `/attendance/month/${user_id}`,
           {
@@ -49,17 +43,14 @@ const AttendanceDetail = () => {
       }
     };
 
-    if (selectedMonth) {
-      fetchData();
-    }
-  }, [user_id, selectedMonth]);
+    fetchData();
+  }, [user_id, searchParams]);
 
   const handleMonthChange = (date: Dayjs | null) => {
     if (date) {
-      setSelectedMonth({
-        month: date.month() + 1,
-        year: date.year(),
-      });
+      searchParams.set("month", (date.month() + 1).toString());
+      searchParams.set("year", date.year().toString());
+      setSearchParams(searchParams);
     }
   };
 
@@ -93,11 +84,11 @@ const AttendanceDetail = () => {
         picker="month"
         placeholder="Select Month"
         onChange={handleMonthChange}
-        value={
-          selectedMonth
-            ? dayjs(`${selectedMonth.year}-${selectedMonth.month}`)
-            : null
-        }
+        value={dayjs(
+          `${searchParams.get("year") || new Date().getFullYear()}-${
+            searchParams.get("month") || new Date().getMonth() + 1
+          }`
+        )}
         className="w-full"
       />
       <div className="overflow-x-auto max-h-[400px] border rounded-lg custom-scrollbar">

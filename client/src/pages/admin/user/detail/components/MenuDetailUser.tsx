@@ -3,6 +3,7 @@ import {
   IoPersonOutline,
   IoCalendarOutline,
   IoAirplaneOutline,
+  IoDocumentTextOutline,
 } from "react-icons/io5";
 import { NavLink, useParams } from "react-router-dom";
 
@@ -21,6 +22,11 @@ const data = [
     icon: <IoAirplaneOutline size={25} />,
     title: "Leave",
     path: "leave",
+  },
+  {
+    icon: <IoDocumentTextOutline size={25} />,
+    title: "Request",
+    path: "request",
   },
 ];
 
