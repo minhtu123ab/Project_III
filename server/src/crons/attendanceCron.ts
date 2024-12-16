@@ -65,7 +65,7 @@ payrollJob.start()
     const today = new Date()
     const month = today.getMonth() + 1
     const year = today.getFullYear()
-    await payrollModel.createPayrollForMonth(month, year)
+    await payrollModel.createPayrollForMonth(month - 3, year)
 
     console.log('Payroll for the month created successfully!')
   } catch (error) {

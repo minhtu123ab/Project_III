@@ -216,7 +216,7 @@ const Payroll = () => {
                 })}
               </td>
               <td className="py-3 px-4 text-center">
-                {payroll?.total_hours} Hrs
+                {Number(payroll?.total_hours || 0).toFixed(2)} Hrs
               </td>
               <td className="py-3 px-4 text-center">
                 <span
