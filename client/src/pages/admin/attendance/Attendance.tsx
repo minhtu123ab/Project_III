@@ -31,6 +31,10 @@ const Attendance = () => {
 
   const navigate = useNavigate();
 
+  const page = searchParams.get("page")
+    ? parseInt(searchParams.get("page")!)
+    : 1;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -113,7 +117,7 @@ const Attendance = () => {
         <tbody>
           {data.map((item, index) => (
             <tr className="border-b border-gray-300" key={index}>
-              <td>{index + 1}</td>
+              <td>{(page - 1) * 5 + index + 1}</td>
               <td>{item?.user_id?.name}</td>
               <td>{item?.user_id?.role}</td>
               <td>

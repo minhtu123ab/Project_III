@@ -31,6 +31,10 @@ const TableUsers = () => {
 
   const navigate = useNavigate();
 
+  const page = searchParams.get("page")
+    ? parseInt(searchParams.get("page")!)
+    : 1;
+
   const fetchUsers = useCallback(async () => {
     try {
       const name = searchParams.get("name");
@@ -100,7 +104,7 @@ const TableUsers = () => {
                   alt=""
                 />
               </td>
-              <td>{index + 1}</td>
+              <td>{(page - 1) * 5 + index + 1}</td>
               <td>{item.name}</td>
               <td>{item.username}</td>
               <td>{item.phone}</td>

@@ -32,6 +32,10 @@ const Payroll = () => {
     handleModalDetailsRef.current?.openModal();
   };
 
+  const page = searchParams.get("page")
+    ? parseInt(searchParams.get("page")!)
+    : 1;
+
   const fetchPayrolls = useCallback(async () => {
     try {
       const month = searchParams.get("month") || new Date().getMonth();
@@ -199,7 +203,9 @@ const Payroll = () => {
         <tbody>
           {payrolls.map((payroll, index) => (
             <tr key={index} className="border-b border-gray-300">
-              <td className="py-3 px-4 text-center">{index + 1}</td>
+              <td className="py-3 px-4 text-center">
+                {(page - 1) * 5 + index + 1}
+              </td>
               <td className="py-3 px-4 text-center">
                 {payroll?.user_id?.name}
               </td>
